@@ -4,8 +4,6 @@ A UI, UX, prototype, and branding skill suite for [Claude Code](https://claude.a
 
 **This is not a component library or a CSS framework.** It's a design thinking partner that reasons about your product from first principles before writing code. It argues trade-offs, rejects layouts that don't fit the context, builds production-grade UI, maintains multi-page prototypes, adopts your existing design system, and generates brand collateral — all from the same source of truth.
 
-**What makes it different:** Most AI UI tools generate code from a prompt. This one thinks first. It asks why before asking what. It presents layout options with trade-off analysis. It rejects a sidebar when a sidebar is the wrong answer. And it doesn't stop at one screen — it tracks components, syncs navigation, and integrates new pages into your actual product.
-
 ## See it work
 
 ```
