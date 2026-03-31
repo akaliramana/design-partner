@@ -217,15 +217,15 @@ These flows are optional — the main UI skill works without them.
 
 ## Architecture
 
-The skill is built as a modular system with skills organized into three groups, on-demand reference files, a BM25 search engine over curated CSV databases, and enforcement hooks.
+8 skills, 14 reference files, a BM25 search engine over 14 CSV databases, 2 enforcement hooks, and a 5-phase pipeline with artifact gates.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design — including the enforcement model, test learnings, design system adoption protocol, and product integration layer. See [SAMPLE-PROMPTS.md](SAMPLE-PROMPTS.md) for test and demo prompts.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design — including the enforcement model (inspired by gstack), test learnings, design system adoption protocol, and product integration layer.
 
 ## Credits
 
-Built on [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) by NextLevelBuilder. The original skill provides the BM25 search engine, CSV knowledge databases, font assets, and sub-skill foundations (ui-styling, design-system, brand, design, slides, banner-design).
+Built on [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) by NextLevelBuilder. The original skill provides the base foundations for UI design themes.
 
-What this repo adds: first-principles reasoning orchestrator, design system adoption, multi-page prototype system, artifact gate enforcement, product integration layer, visual review pipeline, responsive hooks, and the complete build lifecycle.
+What this repo adds over the base: first-principles reasoning orchestrator, design system adoption, multi-page prototype system, artifact gate enforcement, product integration layer, visual review pipeline, responsive hooks, and the complete build lifecycle.
 
 ## Contributing
 
