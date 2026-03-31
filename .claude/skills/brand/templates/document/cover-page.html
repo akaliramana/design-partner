@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @page { size: A4; margin: 0; }
+    .page {
+      width: 210mm; height: 297mm;
+      background: var(--color-background, #ffffff);
+      color: var(--color-text, #1E293B);
+      font-family: var(--font-body, 'Inter', sans-serif);
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 40mm 25mm;
+      position: relative;
+    }
+    .logo { position: absolute; top: 30mm; left: 25mm; display: flex; align-items: center; gap: 8px; }
+    .logo-mark { width: 10px; height: 10px; border-radius: 2px; background: var(--color-primary, #2563EB); }
+    .logo-text { font-size: 14px; font-weight: 600; }
+    .accent-line { width: 50px; height: 3px; background: var(--color-primary, #2563EB); border-radius: 2px; margin-bottom: 24px; }
+    .doc-title { font-family: var(--font-heading, 'Inter', sans-serif); font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .doc-subtitle { font-size: 18px; color: var(--color-text-secondary, #64748B); line-height: 1.5; margin-bottom: 40px; max-width: 400px; }
+    .meta-grid { display: grid; grid-template-columns: auto 1fr; gap: 8px 24px; font-size: 13px; }
+    .meta-label { color: var(--color-text-secondary, #64748B); }
+    .meta-value { font-weight: 500; }
+    .footer { position: absolute; bottom: 25mm; left: 25mm; right: 25mm; display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary, #94A3B8); border-top: 1px solid var(--color-border, #E2E8F0); padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <span class="logo-text">{{COMPANY_NAME}}</span>
+    </div>
+    <div class="accent-line"></div>
+    <h1 class="doc-title">{{DOCUMENT_TITLE}}</h1>
+    <p class="doc-subtitle">{{DOCUMENT_SUBTITLE}}</p>
+    <div class="meta-grid">
+      <span class="meta-label">Author</span>
+      <span class="meta-value">{{AUTHOR}}</span>
+      <span class="meta-label">Date</span>
+      <span class="meta-value">{{DATE}}</span>
+      <span class="meta-label">Version</span>
+      <span class="meta-value">{{VERSION}}</span>
+      <span class="meta-label">Status</span>
+      <span class="meta-value">{{STATUS}}</span>
+    </div>
+    <div class="footer">
+      <span>{{COMPANY_NAME}} · Confidential</span>
+      <span>{{DATE}}</span>
+    </div>
+  </div>
+</body>
+</html>

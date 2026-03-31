@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .slide {
+      width: 1920px; height: 1080px;
+      background: var(--color-background, #0A0A0B);
+      color: var(--color-text, #E8E8ED);
+      font-family: var(--font-body, 'Inter', sans-serif);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 80px 200px;
+      position: relative;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+    .logo-mark { width: 16px; height: 16px; border-radius: 4px; background: var(--color-primary, #7C5CFC); }
+    .logo-text { font-size: 24px; font-weight: 700; }
+    .cta-headline { font-family: var(--font-heading, 'Inter', sans-serif); font-size: 56px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 20px; max-width: 900px; }
+    .cta-sub { font-size: 22px; color: var(--color-text-secondary, #8B8B96); margin-bottom: 48px; max-width: 600px; line-height: 1.5; }
+    .cta-button { display: inline-block; padding: 16px 48px; background: var(--color-primary, #7C5CFC); color: #fff; font-size: 18px; font-weight: 600; border-radius: 8px; text-decoration: none; }
+    .contact { margin-top: 48px; display: flex; gap: 40px; font-size: 16px; color: var(--color-text-secondary, #8B8B96); }
+    .contact a { color: var(--color-primary, #7C5CFC); text-decoration: none; }
+    .slide-number { position: absolute; bottom: 40px; right: 60px; font-size: 14px; color: var(--color-text-secondary, #5C5C66); }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <span class="logo-text">{{COMPANY_NAME}}</span>
+    </div>
+    <h2 class="cta-headline">{{CTA_HEADLINE}}</h2>
+    <p class="cta-sub">{{CTA_SUBTITLE}}</p>
+    <a href="{{CTA_URL}}" class="cta-button">{{CTA_LABEL}}</a>
+    <div class="contact">
+      <span>{{EMAIL}}</span>
+      <span>{{WEBSITE}}</span>
+      <span>{{SOCIAL}}</span>
+    </div>
+    <span class="slide-number">{{SLIDE_NUMBER}}</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @page { size: A4; margin: 25mm 20mm; }
+    body {
+      font-family: var(--font-body, 'Inter', sans-serif);
+      font-size: 11pt;
+      line-height: 1.6;
+      color: var(--color-text, #1E293B);
+    }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 16px; margin-bottom: 32px;
+      border-bottom: 2px solid var(--color-primary, #2563EB);
+    }
+    .header-logo { display: flex; align-items: center; gap: 8px; }
+    .header-mark { width: 8px; height: 8px; border-radius: 2px; background: var(--color-primary, #2563EB); }
+    .header-name { font-size: 14px; font-weight: 600; }
+    .header-contact { text-align: right; font-size: 10px; color: var(--color-text-secondary, #64748B); line-height: 1.5; }
+    .content { min-height: 200mm; }
+    .content h1 { font-family: var(--font-heading, 'Inter', sans-serif); font-size: 20pt; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .content h2 { font-family: var(--font-heading, 'Inter', sans-serif); font-size: 15pt; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .content h3 { font-size: 12pt; font-weight: 600; margin-top: 16px; margin-bottom: 6px; }
+    .content p { margin-bottom: 12px; max-width: 75ch; }
+    .content ul, .content ol { margin-bottom: 12px; padding-left: 24px; }
+    .content li { margin-bottom: 4px; }
+    .content table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10pt; }
+    .content th { background: var(--color-surface, #F8FAFC); font-weight: 600; text-align: left; padding: 8px 12px; border: 1px solid var(--color-border, #E2E8F0); }
+    .content td { padding: 8px 12px; border: 1px solid var(--color-border, #E2E8F0); }
+    .footer {
+      margin-top: 32px; padding-top: 12px;
+      border-top: 1px solid var(--color-border, #E2E8F0);
+      display: flex; justify-content: space-between;
+      font-size: 9px; color: var(--color-text-secondary, #94A3B8);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-logo">
+      <div class="header-mark"></div>
+      <span class="header-name">{{COMPANY_NAME}}</span>
+    </div>
+    <div class="header-contact">
+      {{EMAIL}}<br>
+      {{WEBSITE}}
+    </div>
+  </div>
+  <div class="content">
+    <!-- Document content goes here -->
+    {{CONTENT}}
+  </div>
+  <div class="footer">
+    <span>{{COMPANY_NAME}} · {{DOCUMENT_TITLE}}</span>
+    <span>Page {{PAGE_NUMBER}}</span>
+    <span>{{DATE}}</span>
+  </div>
+</body>
+</html>

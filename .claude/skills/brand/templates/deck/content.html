@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .slide {
+      width: 1920px; height: 1080px;
+      background: var(--color-background, #0A0A0B);
+      color: var(--color-text, #E8E8ED);
+      font-family: var(--font-body, 'Inter', sans-serif);
+      display: flex; gap: 80px;
+      padding: 80px 120px;
+    }
+    .text-col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .visual-col { flex: 1; display: flex; align-items: center; justify-content: center; background: var(--color-surface, #141417); border-radius: 12px; }
+    .headline { font-family: var(--font-heading, 'Inter', sans-serif); font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 24px; }
+    .body { font-size: 22px; color: var(--color-text-secondary, #8B8B96); line-height: 1.6; max-width: 600px; }
+    .body ul { list-style: none; padding: 0; margin-top: 20px; }
+    .body li { padding: 8px 0; padding-left: 20px; position: relative; }
+    .body li::before { content: ''; position: absolute; left: 0; top: 16px; width: 6px; height: 6px; border-radius: 50%; background: var(--color-primary, #7C5CFC); }
+    .visual-placeholder { color: var(--color-text-secondary, #8B8B96); font-size: 16px; }
+    .slide-number { position: absolute; bottom: 40px; right: 60px; font-size: 14px; color: var(--color-text-secondary, #5C5C66); }
+  </style>
+</head>
+<body>
+  <div class="slide" style="position:relative;">
+    <div class="text-col">
+      <h2 class="headline">{{HEADLINE}}</h2>
+      <div class="body">
+        {{BODY_CONTENT}}
+      </div>
+    </div>
+    <div class="visual-col">
+      <span class="visual-placeholder">{{IMAGE_OR_ILLUSTRATION}}</span>
+    </div>
+    <span class="slide-number">{{SLIDE_NUMBER}}</span>
+  </div>
+</body>
+</html>

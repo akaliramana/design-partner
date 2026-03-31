@@ -1,0 +1,76 @@
+# CLAUDE.md
+
+## UI Skill — Build Pipeline
+
+This project uses the **ui-ux** skill. Follow this pipeline for ALL UI work. Do not skip steps.
+
+### Build Pipeline (artifact gates)
+
+Each step produces an artifact required by the next step. You cannot proceed without it.
+
+**Step 1: Design System (MUST establish first)**
+
+**Check:** Does this project already have a design system? (DESIGN_SYSTEM.md, theme.js, custom tailwind theme, CSS variables, etc.)
+
+- **YES → Adopt it.** Read existing tokens, audit completeness, adopt as source of truth. Write `design-system/MASTER.md` as an adoption record (not a replacement). Do NOT run the search engine — the project's system IS the source of truth.
+- **NO → Generate one:**
+  ```bash
+  python3 .claude/skills/ui-skill/scripts/search.py "<product_type> <keywords>" --design-system --persist -p "<ProjectName>"
+  ```
+
+Either way, `design-system/MASTER.md` must exist before writing component code.
+
+**Step 2: Tokens → Code**
+Read the design system source of truth (adopted files OR MASTER.md) and create/update the project's CSS entry point with the exact CSS variables. (Next.js: `src/app/globals.css`, Vite: `src/index.css`, HTML: `styles/globals.css`)
+
+**Step 3: Build shared components**
+After creating EACH shared component (sidebar, header, nav, etc.), update `.ui-skill/registry.json`.
+
+**Step 4: Build pages**
+After creating EACH page, update `.ui-skill/manifest.json`. Manifest keys are route paths (`/`, `/project-settings`, `/team-members`), not abstract IDs.
+
+**Step 5: Auto-sync navigation**
+After adding/removing a page, update the navigation component to include/remove the link on ALL pages. Nav hrefs MUST match manifest route paths.
+
+**Step 6: Verify (ALL of these, in order)**
+1. `npm run lint` — must pass
+2. `npm run build` — must pass
+3. Start app (`npm run dev`) and verify every manifest route returns 200
+4. Route `/` shows generated content (not default Next.js starter)
+5. Visual review (if Playwright or gstack available):
+   ```bash
+   node .claude/skills/ui-skill/scripts/visual-check.js --manifest .ui-skill/manifest.json --port 3001 --output .ui-skill/screenshots
+   ```
+6. If no browser tool: tell user to open localhost to check manually
+
+**Planning is not a deliverable. If you stop after generating MASTER.md without building app files, you have failed.**
+
+### Route Convention
+
+Manifest keys are route paths. Not abstract IDs.
+- `/` (root/main page)
+- `/project-settings`
+- `/team-members`
+- `/my-tasks`
+
+### For existing projects (no .ui-skill/ yet)
+Scan the codebase first → build registry.json and manifest.json from existing code → confirm with user → then proceed.
+
+### For edits
+Read `.ui-skill/registry.json` first → identify affected pages → apply change → auto-sync if shared component → verify.
+
+### For brand collateral (decks, docs, posters)
+Read the active design system source of truth (project files if adopted, MASTER.md if generated) for brand tokens → ask user what they need → build only that → save template.
+
+## State Files
+
+| File | Purpose |
+|------|---------|
+| `design-system/MASTER.md` | Adoption record (if existing system adopted) OR generated design system (if new project). For adopted projects, the project's own design files are the real source of truth. |
+| `.ui-skill/registry.json` | Shared component tracking |
+| `.ui-skill/manifest.json` | Page tracking (keys are route paths), navigation, relationships |
+| `.ui-skill/design-decisions.md` | Reasoning log (if no git history) |
+
+## Responsive
+
+ALL components must have responsive Tailwind classes. Minimum breakpoints: `sm:` (mobile), `md:` (tablet), `lg:` (desktop). No fixed widths without responsive alternatives.
