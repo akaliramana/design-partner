@@ -1,6 +1,6 @@
 # design-partner
 
-Senior designer + UX researcher skill suite for [Claude Code](https://claude.ai/code).
+A UI, UX, prototype, and branding skill suite for [Claude Code](https://claude.ai/code).
 
 **This is not a component library or a CSS framework.** It's a design thinking partner that reasons about your product from first principles before writing code. It argues trade-offs, rejects layouts that don't fit the context, builds production-grade UI, maintains multi-page prototypes, adopts your existing design system, and generates brand collateral — all from the same source of truth.
 
