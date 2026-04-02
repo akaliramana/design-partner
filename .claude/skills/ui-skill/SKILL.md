@@ -217,6 +217,12 @@ python3 .claude/skills/ui-skill/scripts/search.py "<keyword>" --stack react|next
   □ design-system/MASTER.md exists on disk (adoption record OR generated system)
   □ MASTER.md has a Context section
   □ I have color tokens, font choices, and spacing values to build with
+  □ The system defines scales that Phase 5 can verify against:
+    - Type scale (at least 4 defined sizes)
+    - Spacing scale (consistent grid: 4px or 8px based)
+    - Border radius values (per element family)
+    - Control heights (button, input baseline heights)
+    If any are missing: fill them now so consistency checks aren't guessing later.
   □ If adopted: I told the user what I'm adopting and what gaps I'm filling
   → DO NOT STOP HERE. Immediately proceed to Phase 4.
 ```
@@ -327,6 +333,20 @@ The user asked you to BUILD an app, not generate a design system and stop.
 - [ ] `.ui-skill/manifest.json` lists all pages/screens (not empty)
 - [ ] Accessibility basics: contrast ratios in code, ARIA attributes, focus states
 
+**5a-consistency. Design consistency scan (always — catches vibe coding drift):**
+The rule is **semantic consistency, not literal sameness.** A dense toolbar button, a primary CTA, and an icon button SHOULD differ. But buttons of the same role must be consistent across pages. Same for cards, headings, inputs.
+
+Scan the generated/modified files:
+- [ ] No hardcoded hex colors outside design tokens (grep for `#[0-9A-Fa-f]{6}` not in MASTER.md/globals.css/token files)
+- [ ] Font sizes follow the design system's type scale (no arbitrary values like `text-[15px]` mixing with scale values)
+- [ ] Spacing/padding uses the project's spacing scale (no off-grid arbitrary values for same-level elements)
+- [ ] Same-role buttons use the same height/padding across pages (primary CTAs match each other, icon buttons match each other)
+- [ ] Same-type form inputs use the same height across pages
+- [ ] Border radius is consistent per element family (all cards share radius, all buttons share radius — they don't need to match each other)
+- [ ] Repeated UI patterns use shared components, not duplicated inline styling
+
+Optional: run `node .claude/skills/ui-skill/scripts/consistency-check.js --src src/ --css <css-entry-point>`
+
 **5a-integration. Product integration verification (for existing projects):**
 - [ ] Every new page is reachable from desktop navigation
 - [ ] Every new page is reachable from mobile navigation (if project supports it)
@@ -367,6 +387,13 @@ Check 3: Neither available?
    - AI-slop patterns (uniform grids, generic spacing, decorative gradients)
    - Spacing/alignment inconsistencies
    - Dark mode contrast problems
+   - **Design consistency across pages (semantic, not literal):**
+     - Same-level headings match in size and weight across pages
+     - Same-role buttons match in height, padding, and state styling across pages
+     - Same component families (cards, inputs, badges) share radius and shadow treatment
+     - Spacing rhythm feels systematic, not page-by-page improvised
+     - Form controls align to one system
+     - Overall: does the app feel like one designer built it?
 3. If issues found → fix in code → re-run screenshots → verify fix
 4. Repeat until clean
 
@@ -374,6 +401,7 @@ Check 3: Neither available?
 - [ ] No AI-slop patterns (generic gradients, centered-everything, uniform grids)
 - [ ] Responsive works at 375px, 768px, 1440px (verified visually or by code inspection)
 - [ ] Design matches source of truth tokens — adopted system OR MASTER.md (not drifted to general knowledge)
+- [ ] Design consistency: no hardcoded colors outside tokens, font/spacing/radius follow consistent scales, buttons and inputs sized uniformly
 
 ```
 ✅ PHASE 5 CHECKLIST — before reporting to the user:
@@ -386,6 +414,7 @@ Check 3: Neither available?
   □ Route serving / shows generated content (not framework default starter)
   □ At least one shared component and one route file were created this run
   □ All shared components have responsive breakpoints
+  □ Design consistency verified (no hardcoded colors, consistent font/spacing/radius scales, uniform button/input sizing)
   □ For existing projects: product integration verified (nav parity, shell consistency, no parallel nav)
   □ Visual review done (if tools available) or user told to check manually
   → NOW I can report to the user that the build is complete.
