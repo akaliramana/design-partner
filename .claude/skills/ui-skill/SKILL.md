@@ -333,19 +333,21 @@ The user asked you to BUILD an app, not generate a design system and stop.
 - [ ] `.ui-skill/manifest.json` lists all pages/screens (not empty)
 - [ ] Accessibility basics: contrast ratios in code, ARIA attributes, focus states
 
-**5a-consistency. Design consistency scan (always — catches vibe coding drift):**
-The rule is **semantic consistency, not literal sameness.** A dense toolbar button, a primary CTA, and an icon button SHOULD differ. But buttons of the same role must be consistent across pages. Same for cards, headings, inputs.
+**5a-consistency. Design consistency check (always — catches vibe coding drift):**
+The rule is **semantic consistency, not literal sameness.** A dense toolbar button, a primary CTA, and an icon button SHOULD differ. But buttons of the same role must be consistent across pages.
 
-Scan the generated/modified files:
-- [ ] No hardcoded hex colors outside design tokens (grep for `#[0-9A-Fa-f]{6}` not in MASTER.md/globals.css/token files)
-- [ ] Font sizes follow the design system's type scale (no arbitrary values like `text-[15px]` mixing with scale values)
-- [ ] Spacing/padding uses the project's spacing scale (no off-grid arbitrary values for same-level elements)
-- [ ] Same-role buttons use the same height/padding across pages (primary CTAs match each other, icon buttons match each other)
+**Automated (script can catch):**
+- [ ] No hardcoded hex colors outside design tokens
+- [ ] Spacing values on the project's grid (no off-grid arbitrary values like `p-[13px]`)
+
+Run: `node .claude/skills/ui-skill/scripts/consistency-check.js --src src/ --css <css-entry-point>`
+
+**Manual (Claude reads code to check — requires semantic understanding):**
+- [ ] Font sizes follow the design system's type scale (no arbitrary values mixing with scale values)
+- [ ] Same-role buttons use the same height/padding across pages
 - [ ] Same-type form inputs use the same height across pages
-- [ ] Border radius is consistent per element family (all cards share radius, all buttons share radius — they don't need to match each other)
+- [ ] Border radius is consistent per element family (cards share one, buttons share one)
 - [ ] Repeated UI patterns use shared components, not duplicated inline styling
-
-Optional: run `node .claude/skills/ui-skill/scripts/consistency-check.js --src src/ --css <css-entry-point>`
 
 **5a-integration. Product integration verification (for existing projects):**
 - [ ] Every new page is reachable from desktop navigation

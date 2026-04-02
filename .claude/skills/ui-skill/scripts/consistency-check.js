@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 /**
- * Design Consistency Check
+ * Design Consistency Helper
  *
- * Scans source files for hardcoded values that suggest design drift:
- * - Hex colors not in the design system
- * - Arbitrary pixel values outside a spacing scale
- * - Inconsistent border-radius values
- * - Button/input height variance
+ * Flags obvious design drift that grep can reliably catch:
+ * - Hex colors not in the design system tokens
+ * - Arbitrary spacing values off the 4px grid
+ *
+ * This is a helper, not an enforcer. Semantic consistency (same-role
+ * buttons matching, component family radius, etc.) requires visual
+ * review — Claude does that by reading code and reviewing screenshots.
  *
  * Usage:
  *   node consistency-check.js --src src/ --tokens design-system/MASTER.md
@@ -27,7 +29,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--css" && args[i + 1]) cssFile = args[++i];
 }
 
-// Extract known tokens from CSS or MASTER.md
+// Extract known colors from CSS or MASTER.md
 function extractKnownColors(file) {
   if (!file || !fs.existsSync(file)) return new Set();
   const content = fs.readFileSync(file, "utf-8");
@@ -59,8 +61,7 @@ function findFiles(dir, exts) {
 function checkHardcodedColors(files, knownColors) {
   const issues = [];
   const hexInCode = /#[0-9A-Fa-f]{6}/g;
-  // Common framework/library colors to ignore
-  const ignore = new Set(["#000000", "#FFFFFF", "#ffffff", "#000000"]);
+  const ignore = new Set(["#000000", "#FFFFFF"]);
 
   for (const file of files) {
     const content = fs.readFileSync(file, "utf-8");
@@ -71,15 +72,14 @@ function checkHardcodedColors(files, knownColors) {
       while ((match = hexInCode.exec(lines[i])) !== null) {
         const color = match[0].toUpperCase();
         if (!knownColors.has(color) && !ignore.has(color)) {
-          // Check if it's inside a CSS variable definition (that's fine)
+          // Skip CSS variable definitions (those ARE the tokens)
           if (lines[i].includes("--") && lines[i].includes(":")) continue;
-          // Check if it's in a comment
+          // Skip comments
           if (lines[i].trim().startsWith("//") || lines[i].trim().startsWith("*")) continue;
           issues.push({
             file: path.relative(".", file),
             line: i + 1,
             value: match[0],
-            issue: "Hardcoded color not in design tokens",
           });
         }
       }
@@ -88,36 +88,7 @@ function checkHardcodedColors(files, knownColors) {
   return issues;
 }
 
-// Check for inconsistent border-radius values
-function checkBorderRadius(files) {
-  const radiusValues = {};
-  const radiusPattern = /rounded-\[(\d+)px\]|rounded-(none|sm|md|lg|xl|2xl|3xl|full)/g;
-
-  for (const file of files) {
-    const content = fs.readFileSync(file, "utf-8");
-    let match;
-    radiusPattern.lastIndex = 0;
-    while ((match = radiusPattern.exec(content)) !== null) {
-      const val = match[0];
-      if (!radiusValues[val]) radiusValues[val] = [];
-      radiusValues[val].push(path.relative(".", file));
-    }
-  }
-
-  const uniqueValues = Object.keys(radiusValues);
-  if (uniqueValues.length > 5) {
-    return [
-      {
-        issue: `${uniqueValues.length} different border-radius values found`,
-        values: uniqueValues.join(", "),
-        hint: "Consider standardizing to 3-4 radius values max",
-      },
-    ];
-  }
-  return [];
-}
-
-// Check for arbitrary spacing values
+// Check for arbitrary spacing values off the 4px grid
 function checkSpacingDrift(files) {
   const arbitrarySpacing = /(?:p|m|gap|space)-\[(\d+)px\]/g;
   const issues = [];
@@ -130,13 +101,12 @@ function checkSpacingDrift(files) {
       arbitrarySpacing.lastIndex = 0;
       while ((match = arbitrarySpacing.exec(lines[i])) !== null) {
         const px = parseInt(match[1]);
-        // Flag values not on a 4px grid
         if (px % 4 !== 0) {
           issues.push({
             file: path.relative(".", file),
             line: i + 1,
             value: match[0],
-            issue: `Arbitrary spacing ${px}px is not on 4px grid`,
+            px,
           });
         }
       }
@@ -149,44 +119,41 @@ function checkSpacingDrift(files) {
 const knownColors = extractKnownColors(tokensFile || cssFile);
 const files = findFiles(srcDir, [".tsx", ".jsx", ".css"]);
 
-console.log(`Design Consistency Check — ${files.length} files\n`);
+console.log(`Design Consistency Helper — ${files.length} files scanned\n`);
 
-const colorIssues = checkHardcodedColors(files, knownColors);
-const radiusIssues = checkBorderRadius(files);
-const spacingIssues = checkSpacingDrift(files);
-
-const totalIssues = colorIssues.length + radiusIssues.length + spacingIssues.length;
-
-if (colorIssues.length > 0) {
-  console.log(`Hardcoded colors (${colorIssues.length}):`);
-  for (const issue of colorIssues.slice(0, 10)) {
-    console.log(`  ${issue.file}:${issue.line} — ${issue.value}`);
-  }
-  if (colorIssues.length > 10) console.log(`  ... and ${colorIssues.length - 10} more`);
-  console.log();
+if (knownColors.size === 0) {
+  console.log("Note: No token file provided. Color check will flag ALL hardcoded hex values.");
+  console.log("  Use --css <path> or --tokens <path> to provide your design tokens.\n");
 }
 
-if (radiusIssues.length > 0) {
-  console.log(`Border radius inconsistency:`);
-  for (const issue of radiusIssues) {
-    console.log(`  ${issue.issue}`);
-    console.log(`  Values: ${issue.values}`);
-    console.log(`  ${issue.hint}`);
+const colorIssues = checkHardcodedColors(files, knownColors);
+const spacingIssues = checkSpacingDrift(files);
+
+if (colorIssues.length > 0) {
+  console.log(`Hardcoded colors outside tokens (${colorIssues.length}):`);
+  for (const issue of colorIssues.slice(0, 15)) {
+    console.log(`  ${issue.file}:${issue.line} — ${issue.value}`);
   }
+  if (colorIssues.length > 15) console.log(`  ... and ${colorIssues.length - 15} more`);
   console.log();
 }
 
 if (spacingIssues.length > 0) {
-  console.log(`Spacing drift (${spacingIssues.length}):`);
-  for (const issue of spacingIssues.slice(0, 10)) {
-    console.log(`  ${issue.file}:${issue.line} — ${issue.value} (${issue.issue})`);
+  console.log(`Off-grid spacing (${spacingIssues.length}):`);
+  for (const issue of spacingIssues.slice(0, 15)) {
+    console.log(`  ${issue.file}:${issue.line} — ${issue.value} (${issue.px}px is not on 4px grid)`);
   }
-  if (spacingIssues.length > 10) console.log(`  ... and ${spacingIssues.length - 10} more`);
+  if (spacingIssues.length > 15) console.log(`  ... and ${spacingIssues.length - 15} more`);
   console.log();
 }
 
-if (totalIssues === 0) {
-  console.log("No consistency issues found.");
+const total = colorIssues.length + spacingIssues.length;
+if (total === 0) {
+  console.log("No obvious drift found.");
 } else {
-  console.log(`${totalIssues} total issue(s). Review and fix to maintain design consistency.`);
+  console.log(`${total} item(s) flagged. Review manually — some may be intentional.`);
 }
+
+console.log("\nNote: This helper catches what grep can catch (hardcoded colors, off-grid spacing).");
+console.log("Semantic consistency (same-role buttons, component families, spacing rhythm)");
+console.log("requires visual review — check screenshots across pages.");
