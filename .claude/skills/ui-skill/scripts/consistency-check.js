@@ -50,7 +50,7 @@ function findFiles(dir, exts) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules") {
       results.push(...findFiles(full, exts));
-    } else if (exts.some((ext) => entry.name.endsWith(ext))) {
+    } else if (entry.name !== "package.json" && exts.some((ext) => entry.name.endsWith(ext))) {
       results.push(full);
     }
   }
@@ -90,7 +90,7 @@ function checkHardcodedColors(files, knownColors) {
 
 // Check for arbitrary spacing values off the 4px grid
 function checkSpacingDrift(files) {
-  const arbitrarySpacing = /(?:p|m|gap|space)-\[(\d+)px\]/g;
+  const arbitrarySpacing = /(?:p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-x|space-y)-\[(\d+)px\]/g;
   const issues = [];
 
   for (const file of files) {
@@ -117,13 +117,18 @@ function checkSpacingDrift(files) {
 
 // --- Main ---
 const knownColors = extractKnownColors(tokensFile || cssFile);
-const files = findFiles(srcDir, [".tsx", ".jsx", ".css"]);
+const files = findFiles(srcDir, [".tsx", ".jsx", ".ts", ".js", ".css"]);
 
 console.log(`Design Consistency Helper — ${files.length} files scanned\n`);
 
 if (knownColors.size === 0) {
-  console.log("Note: No token file provided. Color check will flag ALL hardcoded hex values.");
-  console.log("  Use --css <path> or --tokens <path> to provide your design tokens.\n");
+  if (!tokensFile && !cssFile) {
+    console.log("Note: No token file provided. Color check will flag ALL hardcoded hex values.");
+    console.log("  Use --css <path> or --tokens <path> to provide your design tokens.\n");
+  } else {
+    console.log("Note: Token file provided but no hex colors found in it. Your system may use");
+    console.log("  CSS vars, HSL, or RGB — color check will flag all hardcoded hex values.\n");
+  }
 }
 
 const colorIssues = checkHardcodedColors(files, knownColors);
